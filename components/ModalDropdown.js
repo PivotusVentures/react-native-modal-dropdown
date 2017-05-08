@@ -213,9 +213,16 @@ export default class ModalDropdown extends Component {
     let showInBottom = bottomSpace >= dropdownHeight || bottomSpace >= this._buttonFrame.y;
     let showInLeft = rightSpace >= this._buttonFrame.x;
 
+    let top;
+    if (this.props.dropdownStyle && typeof StyleSheet.flatten(this.props.dropdownStyle).top !== 'undefined') {
+      top = StyleSheet.flatten(this.props.dropdownStyle).top;
+    } else {
+      top = showInBottom ? this._buttonFrame.y + this._buttonFrame.h : Math.max(0, this._buttonFrame.y - dropdownHeight);
+    }
+
     var style = {
       height: dropdownHeight,
-      top: showInBottom ? this._buttonFrame.y + this._buttonFrame.h : Math.max(0, this._buttonFrame.y - dropdownHeight),
+      top,
     };
 
     if (showInLeft) {
@@ -226,7 +233,10 @@ export default class ModalDropdown extends Component {
       if (dropdownWidth !== -1) {
         style.width = dropdownWidth;
       }
-      style.right = rightSpace - this._buttonFrame.w;
+
+      style.right = this.props.dropdownStyle && typeof StyleSheet.flatten(this.props.dropdownStyle).right !== 'undefined' ?
+        StyleSheet.flatten(this.props.dropdownStyle).right :
+        rightSpace - this._buttonFrame.w;
     }
 
     if (this.props.adjustFrame) {
